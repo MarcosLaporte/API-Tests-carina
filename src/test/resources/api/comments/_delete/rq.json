@@ -1,0 +1,9 @@
+[
+  {
+    "postId": 999,
+    "id": 501,
+    "name": "sample name",
+    "email": "sample@example.com",
+    "body": "sample body text"
+  }
+]

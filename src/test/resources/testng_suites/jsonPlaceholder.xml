@@ -1,0 +1,9 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="My API Tests">
+
+    <test name="JSON Placeholder API tests">
+        <classes>
+            <class name="JsonPlaceholderApiTests" />
+        </classes>
+    </test>
+</suite>
