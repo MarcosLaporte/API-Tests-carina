@@ -1,7 +1,9 @@
 import com.zebrunner.carina.core.IAbstractTest;
+import io.restassured.response.Response;
 import jsonPlaceholder.api.DeleteCommentMethod;
 import jsonPlaceholder.api.GetCommentMethod;
 import jsonPlaceholder.api.PostCommentMethod;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class JsonPlaceholderApiTests implements IAbstractTest {
@@ -25,6 +27,17 @@ public class JsonPlaceholderApiTests implements IAbstractTest {
         GetCommentMethod getComment = new GetCommentMethod("501");
         getComment.callAPIExpectSuccess();
         getComment.validateResponseAgainstSchema("api/comments/_get/rs.schema");
+    }
+
+    @Test()
+    public void testGetEmptyComment() {
+        GetCommentMethod getComment = new GetCommentMethod("99999999");
+        Response resp = getComment.callAPIExpectSuccess();
+
+        Assert.assertEquals(
+                resp.body().asString(), "[]",
+                "Expected empty array for non-existent data."
+        );
     }
 
     @Test()
