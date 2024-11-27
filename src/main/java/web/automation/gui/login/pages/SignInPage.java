@@ -16,6 +16,11 @@ public class SignInPage extends AbstractPage {
         setUiLoadedMarker(testTitle);
     }
 
+    @Override
+    public void open() {
+        getDriver().navigate().to("https://practicetestautomation.com/practice-test-login/");
+    }
+
     @FindBy(xpath = "//*[@id=\"username\"]")
     public ExtendedWebElement userInput;
 

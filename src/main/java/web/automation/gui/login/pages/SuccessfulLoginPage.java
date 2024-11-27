@@ -17,6 +17,11 @@ public class SuccessfulLoginPage extends AbstractPage {
         setUiLoadedMarker(successTitle);
     }
 
+    @Override
+    public void open() {
+        getDriver().navigate().to("https://practicetestautomation.com/logged-in-successfully/");
+    }
+
     @FindBy(xpath = "//*[@id=\"loop-container\"]/div/article/div[2]/div/div/div/a")
     public ExtendedWebElement logoutBtn;
 
