@@ -6,4 +6,9 @@
             <class name="WebTests.LoginPageTests" />
         </classes>
     </test>
+    <test name="Store Tests">
+        <classes>
+            <class name="WebTests.StorePageTests" />
+        </classes>
+    </test>
 </suite>
