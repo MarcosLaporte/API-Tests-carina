@@ -1,3 +1,5 @@
+package WebTests;
+
 import com.zebrunner.carina.core.IAbstractTest;
 import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
@@ -6,7 +8,7 @@ import org.testng.asserts.SoftAssert;
 import web.automation.gui.login.pages.SignInPage;
 import web.automation.gui.login.pages.SuccessfulLoginPage;
 
-public class MyWebTests implements IAbstractTest {
+public class LoginPageTests implements IAbstractTest {
     @Test
     public void testSuccessfulLogin() {
         WebDriver driver = getDriver();
