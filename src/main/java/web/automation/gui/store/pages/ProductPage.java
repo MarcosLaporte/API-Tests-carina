@@ -9,23 +9,24 @@ import org.openqa.selenium.support.FindBy;
 
 @DeviceType(pageType = DeviceType.Type.DESKTOP, parentClass = ProductPage.class)
 public class ProductPage extends AbstractPage {
+    @FindBy(xpath = "//body[@id=\"product\"]")
+    private ExtendedWebElement bodyProductEl;
 
     public ProductPage(WebDriver driver) {
         super(driver);
-        setPageOpeningStrategy(PageOpeningStrategy.BY_URL);
+        setPageOpeningStrategy(PageOpeningStrategy.BY_ELEMENT);
+        setUiLoadedMarker(bodyProductEl);
     }
 
-    @FindBy(xpath = "//*[@id=\"product_details\"]/div/div[2]/div/div/h1/span")
+    @FindBy(xpath = "//*[@id=\"main\"]/div[1]/div[2]/h1")
     public ExtendedWebElement productName;
 
-    @FindBy(xpath = "//*[@id=\"product_details\"]/div/div[2]/div/div/div[1]/div/div")
+    @FindBy(xpath = "//*[@id=\"main\"]/div[1]/div[2]/div[1]/div[2]/div/span[1]")
     public ExtendedWebElement priceTag;
 
-    @FindBy(xpath = "//*[@id=\"product_quantity\"]")
+    @FindBy(xpath = "//*[@id=\"quantity_wanted\"]")
     public ExtendedWebElement productQtyInput;
 
-    @Override
-    public boolean isPageOpened() {
-        return getCurrentUrl().contains("rt=product/product");
-    }
+    @FindBy(xpath = "//*[@id=\"add-to-cart-or-refresh\"]/div[2]/div/div[2]/button")
+    public ExtendedWebElement addToCartBtn;
 }

@@ -12,28 +12,23 @@ import java.util.List;
 
 public class ListedProducts extends AbstractUIObject {
     public enum ProductList {
-        FEATURED("featured", "featured_1769"),
-        LATEST("latest", "latest_1770"),
-        BESTSELLERS("bestseller", "bestsellers_1771"),
-        SPECIALS("special", "special_1772");
+        POPULAR("Popular Products"),
+        SALE("On sale"),
+        NEW("New products");
 
-        public final String sectionId;
-        public final String prodListDivId;
+        public final String displayText;
 
-        ProductList(String sectionId, String prodListDivId) {
-            this.sectionId = sectionId;
-            this.prodListDivId = prodListDivId;
+        ProductList(String displayText) {
+            this.displayText = displayText;
         }
 
-        public String getListElementId() {
-            return "block_frame_" + this.prodListDivId;
+        @Override
+        public String toString() {
+            return displayText;
         }
     }
 
-    @FindBy(xpath = ".//h1/span[@class=\"maintext\"]")
-    public WebElement listName;
-
-    @FindBy(xpath = ".//div[contains(@class, \"thumbnails\")]/div")
+    @FindBy(xpath = ".//div[contains(@class, \"products\")]/div[contains(@class, \"js-product\")]/article")
     private List<WebElement> productElementList;
 
     private final List<ProductCard> productCardList;
@@ -44,7 +39,8 @@ public class ListedProducts extends AbstractUIObject {
 
         productCardList = productElementList
                 .stream()
-                .map(el -> new ProductCard(driver, el)).toList();
+                .map(el -> new ProductCard(driver, el))
+                .toList();
     }
 
     public List<ProductCard> getProductCardList() {

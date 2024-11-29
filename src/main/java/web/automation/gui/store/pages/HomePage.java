@@ -19,25 +19,26 @@ public class HomePage extends AbstractPage {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    @FindBy(xpath = "//*[@id=\"maincontainer\"]/div/div/div[1]/section/div/h4")
-    public ExtendedWebElement greetingsMsg;
+    @FindBy(xpath = "//*[@id=\"carousel\"]")
+    private ExtendedWebElement carouselEl;
 
     public HomePage(WebDriver driver) {
         super(driver);
         setPageOpeningStrategy(PageOpeningStrategy.BY_ELEMENT);
-        setUiLoadedMarker(greetingsMsg);
+        setUiLoadedMarker(carouselEl);
     }
 
     @Override
     public void open() {
-        getDriver().navigate().to("https://automationteststore.com/");
+        getDriver().navigate().to("https://teststore.automationtesting.co.uk/");
     }
 
     public ListedProducts getProductsInList(ListedProducts.ProductList productList) {
         LOGGER.info("Getting listed products from {} list...", productList);
 
-        String xmlPath = "//*[@id=\"" + productList.getListElementId() + "\"]";
-        WebElement listSectionEl = getDriver().findElement(By.xpath(xmlPath));
+        String xPath = "//section[contains(@class, \"featured-products\")]//h2[normalize-space(text())=\"" + productList + "\"]/..";
+        WebElement listSectionEl = getDriver().findElement(By.xpath(xPath));
+
         if (listSectionEl == null)
             LOGGER.warn("List element was not found.");
 

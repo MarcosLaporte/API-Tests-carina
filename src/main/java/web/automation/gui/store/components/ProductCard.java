@@ -16,10 +16,10 @@ import java.lang.invoke.MethodHandles;
 public class ProductCard extends AbstractUIObject {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    @FindBy(xpath = ".//div/div/a[@class=\"prdocutname\"]")
+    @FindBy(xpath = ".//h3/a")
     public WebElement productName;
 
-    @FindBy(xpath = ".//div[contains(@class, \"pricetag\")]/div[@class=\"price\"]/div[@class=\"oneprice\"]")
+    @FindBy(xpath = ".//span[@class=\"price\"]")
     public WebElement priceTag;
 
     public ProductCard(WebDriver driver, SearchContext searchContext) {
@@ -29,7 +29,7 @@ public class ProductCard extends AbstractUIObject {
 
     public ProductPage openProductPage() {
         productName.click();
-        LOGGER.info("Navigating to ProductPage...");
+        LOGGER.info("Navigating to Product page...");
 //        return initPage(driver, ProductPage.class);
         return new ProductPage(getDriver());
     }

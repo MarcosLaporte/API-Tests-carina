@@ -27,7 +27,8 @@ public class StorePageTests implements IAbstractTest {
         homePage.open();
         Assert.assertTrue(homePage.isPageOpened(), "Home page was not opened.");
 
-        ListedProducts listedProducts = homePage.getProductsInList(ListedProducts.ProductList.BESTSELLERS);
+        ListedProducts listedProducts = homePage.getProductsInList(ListedProducts.ProductList.SALE);
+        listedProducts.scrollTo();
         List<ProductCard> productCardList = listedProducts.getProductCardList();
 
         Assert.assertFalse(productCardList.isEmpty(), "Product List is empty.");
