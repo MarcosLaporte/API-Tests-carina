@@ -54,44 +54,48 @@ public class CartPage extends AbstractPage {
 
     public boolean cartBelongsInPage(Cart cart) {
         LOGGER.info("---------CHECKING CART---------");
-        String totalInLocalCart = cart.getFormattedTotalAmount();
-        String x = this.itemsTotalValue.getText();
-        if (!totalInLocalCart.equals(x)){
-            LOGGER.warn("Total prices don't match.");
+        try {
+            String totalInLocalCart = cart.getFormattedTotalAmount();
+            if (!totalInLocalCart.equals(this.itemsTotalValue.getText()))
+                throw new ProductCartDifferException("Total prices don't match.");
+
+            for (ProductInCart productEl : getProductsInCart()) {
+                String prodName = productEl.productName.getText();
+                Optional<Product> respectiveProd = cart.getProductByName(prodName);
+                LOGGER.info("-------------------------------");
+
+                if (respectiveProd.isEmpty())
+                    throw new ProductCartDifferException(String.format("'%s' does not match to any in the cart", prodName));
+
+                LOGGER.info("----- {} -----", prodName);
+
+                Actions actions = new Actions(getDriver());
+                actions.scrollToElement(productEl.priceTag).perform();
+                actions.moveToElement(productEl.productName).perform();
+
+                Product product = respectiveProd.get();
+
+                String priceInPage = productEl.priceTag.getText();
+                String priceLocalProd = product.getPriceTag();
+                if (!priceInPage.equals(priceLocalProd))
+                    throw new ProductCartDifferException("Prices don't match.");
+
+                int qtyInPage = Integer.parseInt(productEl.productQtyInput.getAttribute("value"));
+                int qtyLocalProd = cart.products.get(product);
+                if (qtyInPage != qtyLocalProd)
+                    throw new ProductCartDifferException("Quantities don't match.");
+            }
+        } catch (ProductCartDifferException e) {
+            LOGGER.error(e.getMessage());
             return false;
         }
 
-        for (ProductInCart productEl : getProductsInCart()) {
-            String prodName = productEl.productName.getText();
-            Optional<Product> respectiveProd = cart.getProductByName(prodName);
-            LOGGER.info("-------------------------------");
-
-            if (respectiveProd.isEmpty()) {
-                LOGGER.warn("'{}' does not match to any in the cart", prodName);
-                return false;
-            }
-
-            LOGGER.debug(prodName);
-
-            Actions actions = new Actions(getDriver());
-            actions.scrollToElement(productEl.priceTag).perform();
-            actions.moveToElement(productEl.productName).perform();
-
-            Product product = respectiveProd.get();
-
-            boolean hasSamePrice = (productEl.priceTag.getText()).equals(product.getPriceTag());
-
-            LOGGER.debug("Price in cart conforms to product: {}", hasSamePrice);
-
-            int formattedQty = cart.products.get(product);
-            int inputValue = Integer.parseInt(productEl.productQtyInput.getAttribute("value"));
-            boolean hasSameQty = inputValue == formattedQty;
-            LOGGER.debug("Quantity in cart conforms to product: {}", hasSameQty);
-
-            if (!hasSamePrice || !hasSameQty)
-                return false;
-        }
-
         return true;
+    }
+
+    private static class ProductCartDifferException extends Exception {
+        public ProductCartDifferException(String message) {
+            super(message);
+        }
     }
 }

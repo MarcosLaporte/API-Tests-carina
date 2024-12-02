@@ -10,7 +10,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import web.automation.gui.store.components.ListedProducts;
 import web.automation.gui.store.components.ProductCard;
 
 import java.lang.invoke.MethodHandles;
@@ -20,6 +19,22 @@ import java.util.Random;
 
 @DeviceType(pageType = DeviceType.Type.DESKTOP, parentClass = AbstractPage.class)
 public class HomePage extends AbstractPage {
+    public enum FeaturedList {
+        POPULAR("Popular Products"),
+        SALE("On sale"),
+        NEW("New products");
+
+        public final String displayText;
+
+        FeaturedList(String displayText) {
+            this.displayText = displayText;
+        }
+
+        @Override
+        public String toString() {
+            return displayText;
+        }
+    }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -37,29 +52,14 @@ public class HomePage extends AbstractPage {
         getDriver().navigate().to("https://teststore.automationtesting.co.uk/");
     }
 
-    /*public ListedProducts getProductsInList(ListedProducts.ProductList productList) {
-        LOGGER.info("Getting listed products from {} list...", productList);
+    public List<ProductCard> getFeaturedProducts(FeaturedList featuredList) {
+        LOGGER.info("Getting listed products from {} list...", featuredList);
 
-        String xPath = "//section[contains(@class, \"featured-products\")]//h2[normalize-space(text())=\"" + productList + "\"]/..";
-        WebElement listSectionEl = getDriver().findElement(By.xpath(xPath));
-
-        if (listSectionEl == null)
-            LOGGER.warn("List element was not found.");
-
-        return new ListedProducts(getDriver(), listSectionEl);
-    }*/
-
-    @FindBy(xpath = "//section[contains(@class, \"featured-products\")]//h2[normalize-space(text())=\"%s\"]/..//article")
-    public List<ExtendedWebElement> productsInList;
-
-    public List<ProductCard> getProductsInList(ListedProducts.ProductList productList) {
-        LOGGER.info("Getting listed products from {} list...", productList);
-
-        String xPath = "//section[contains(@class, \"featured-products\")]//h2[normalize-space(text())=\"" + productList + "\"]/..//article";
+        String xPath = "//section[contains(@class, \"featured-products\")]//h2[normalize-space(text())=\"" + featuredList + "\"]/..//article";
         List<WebElement> listSectionEl = getDriver().findElements(By.xpath(xPath));
 
-        if (listSectionEl == null) {
-            LOGGER.warn("List element was not found.");
+        if (listSectionEl == null || listSectionEl.isEmpty()) {
+            LOGGER.warn("List element was not found or was empty.");
             return List.of();
         }
 
@@ -68,15 +68,12 @@ public class HomePage extends AbstractPage {
                 .toList();
     }
 
-    public List<ProductCard> selectProducts(ListedProducts.ProductList productList, int amount) {
+    public List<ProductCard> selectProducts(FeaturedList featuredList, int amount) {
         if (amount < 1) return List.of();
 
-          /*ListedProducts listedProducts = this.getProductsInList(productList);
-          listedProducts.scrollTo();
-          List<SearchContext> productCardList = listedProducts.productElementList;*/
-
-        String xPath = "//section[contains(@class, \"featured-products\")]//h2[normalize-space(text())=\"" + productList + "\"]/..//article";
-        List<WebElement> productCardElements = getDriver().findElements(By.xpath(xPath));
+        List<WebElement> productCardElements = getDriver().findElements(
+                By.xpath("//section[contains(@class, \"featured-products\")]//h2[normalize-space(text())=\"" + featuredList + "\"]/..//article")
+        );
 
         List<ProductCard> productCardList = productCardElements
                 .stream()
@@ -84,7 +81,7 @@ public class HomePage extends AbstractPage {
                 .toList();
 
         if (amount > productCardList.size())
-            throw new RuntimeException("There aren't enough products in " + productList + " list.");
+            throw new RuntimeException("There aren't enough products in " + featuredList + " list.");
 
         if (productCardList.size() == 1)
             return List.of(productCardList.getFirst());

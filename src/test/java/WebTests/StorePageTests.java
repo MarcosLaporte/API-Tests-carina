@@ -9,7 +9,6 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 import web.automation.gui.store.components.HeaderNav;
-import web.automation.gui.store.components.ListedProducts;
 import web.automation.gui.store.components.ProductCard;
 import web.automation.gui.store.pages.CartPage;
 import web.automation.gui.store.pages.HomePage;
@@ -22,6 +21,7 @@ import java.util.Random;
 
 public class StorePageTests implements IAbstractTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+    private static final By HEADER_NAV_BY = By.xpath("//*[@id=\"header\"]/nav");
 
     @Test
     public void checkProductCard() {
@@ -30,8 +30,8 @@ public class StorePageTests implements IAbstractTest {
         HomePage homePage = new HomePage(driver);
         homePage.open();
         Assert.assertTrue(homePage.isPageOpened(), "Home page was not opened.");
-        List<ProductCard> productCardList = homePage.getProductsInList(ListedProducts.ProductList.SALE);
 
+        List<ProductCard> productCardList = homePage.getFeaturedProducts(HomePage.FeaturedList.SALE);
         Assert.assertFalse(productCardList.isEmpty(), "Product List is empty.");
 
         int randProdIndex = productCardList.size() > 1 ? new Random().nextInt(0, productCardList.size() - 1) : 0;
@@ -40,7 +40,7 @@ public class StorePageTests implements IAbstractTest {
         selectedProd.scrollTo();
         String selectedProdName = selectedProd.productName.getText();
         String selectedProdPrice = selectedProd.priceTag.getText();
-        LOGGER.info("Selected product in list info: {}", selectedProd);
+        LOGGER.info("Selected product in list: {}", selectedProd);
 
         ProductPage productPage = selectedProd.openProductPage();
         Assert.assertTrue(productPage.isPageOpened(), "Product page was not opened.");
@@ -59,11 +59,7 @@ public class StorePageTests implements IAbstractTest {
         softAssert.assertAll();
     }
 
-
-    static By headerNavBy = By.xpath("//*[@id=\"header\"]/nav");
-
-//    @Test(invocationCount = 5)
-    @Test
+    @Test(invocationCount = 3)
     public void addToAndCheckCart() {
         WebDriver driver = getDriver();
 
@@ -72,7 +68,7 @@ public class StorePageTests implements IAbstractTest {
         Assert.assertTrue(homePage.isPageOpened(), "Home page was not opened.");
 
         Random random = new Random();
-        List<ProductCard> productCards = homePage.selectProducts(ListedProducts.ProductList.POPULAR, 3);
+        List<ProductCard> productCards = homePage.selectProducts(HomePage.FeaturedList.POPULAR, 3);
 
         Cart cart = new Cart();
         for (ProductCard productCard : productCards) {
@@ -84,7 +80,7 @@ public class StorePageTests implements IAbstractTest {
         }
         LOGGER.info("All products added to the cart!");
 
-        HeaderNav headerNav = new HeaderNav(driver, driver.findElement(headerNavBy));
+        HeaderNav headerNav = new HeaderNav(driver, driver.findElement(HEADER_NAV_BY));
 
         CartPage cartPage = headerNav.openCartPage();
         Assert.assertTrue(cartPage.isPageOpened(), "Cart page was not opened.");

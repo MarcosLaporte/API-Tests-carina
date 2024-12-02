@@ -106,11 +106,10 @@ public class ProductCard extends AbstractUIObject {
 
         Product product = new Product(preview.productName.getText(), preview.priceTag.getText());
 
-        By prodAddedModalBy = By.id("blockcart-modal");
         ProductAddedModal productAddedModal;
         try {
             productAddedModal = wait.until(
-                    ExpectedConditions.presenceOfElementLocated(prodAddedModalBy)
+                    ExpectedConditions.presenceOfElementLocated(By.id("blockcart-modal"))
                             .andThen(el -> new ProductAddedModal(getDriver(), el))
             );
         } catch (TimeoutException _) {
