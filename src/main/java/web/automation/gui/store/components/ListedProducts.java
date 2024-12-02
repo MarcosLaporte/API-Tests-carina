@@ -3,7 +3,6 @@ package web.automation.gui.store.components;
 import com.zebrunner.carina.webdriver.gui.AbstractUIObject;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.DefaultElementLocatorFactory;
@@ -29,22 +28,15 @@ public class ListedProducts extends AbstractUIObject {
     }
 
     @FindBy(xpath = ".//div[contains(@class, \"products\")]/div[contains(@class, \"js-product\")]/article")
-    private List<WebElement> productElementList;
-
-    private final List<ProductCard> productCardList;
+    public List<SearchContext> productElementList;
 
     public ListedProducts(WebDriver driver, SearchContext searchContext) {
         super(driver, searchContext);
         PageFactory.initElements(new DefaultElementLocatorFactory(searchContext), this);
 
-        productCardList = productElementList
+        /*productCardList = productElementList
                 .stream()
                 .map(el -> new ProductCard(driver, el))
-                .toList();
+                .toList();*/
     }
-
-    public List<ProductCard> getProductCardList() {
-        return this.productCardList;
-    }
-
 }
