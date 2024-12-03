@@ -11,23 +11,30 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 import web.automation.gui.store.components.HeaderNav;
+import web.automation.gui.store.components.HeaderTop;
 import web.automation.gui.store.components.ProductCard;
 import web.automation.gui.store.pages.CartPage;
 import web.automation.gui.store.pages.HomePage;
+import web.automation.gui.store.pages.ProductCategoryPage;
+import web.automation.gui.store.pages.ProductCategoryPage.SortBy;
 import web.automation.gui.store.pages.ProductPage;
 import web.automation.objects.Cart;
+import web.automation.objects.Product;
 
 import java.lang.invoke.MethodHandles;
 import java.time.Duration;
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class StorePageTests implements IAbstractTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private static final By HEADER_NAV_BY = By.xpath("//*[@id=\"header\"]/nav");
+    private static final By HEADER_TOP_BY = By.xpath("//*[@id=\"header\"]/div[@class=\"header-top\"]");
 
     @Test
     public void checkProductCard() {
@@ -44,8 +51,8 @@ public class StorePageTests implements IAbstractTest {
 
         ProductCard selectedProd = productCardList.get(randProdIndex);
         selectedProd.scrollTo();
-        String selectedProdName = selectedProd.productName.getText();
-        String selectedProdPrice = selectedProd.priceTag.getText();
+        String selectedProdName = selectedProd.getProductName();
+        String selectedProdPrice = selectedProd.getProductPriceTag();
         LOGGER.info("Selected product in list: {}", selectedProd);
 
         ProductPage productPage = selectedProd.openProductPage();
@@ -133,5 +140,45 @@ public class StorePageTests implements IAbstractTest {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    @DataProvider(name = "randomSorts")
+    public Object[][] getRandomSorts() {
+        return new Object[][] {
+                {SortBy.getRandomSorts.apply(3)},
+                {SortBy.getRandomSorts.apply(2)},
+                {SortBy.getRandomSorts.apply(5)}
+        };
+    }
+
+    @Test(dataProvider = "randomSorts")
+    public void checkSortingOptions(SortBy[] chosenSorts) {
+        WebDriver driver = getDriver();
+
+        HomePage homePage = new HomePage(driver);
+        homePage.open();
+        Assert.assertTrue(homePage.isPageOpened(), "Home page was not opened.");
+
+        HeaderTop headerTop = new HeaderTop(driver, driver.findElement(HEADER_TOP_BY));
+        ProductCategoryPage categoryPage = headerTop.openCategoryPage(HeaderTop.Categories.ART);
+
+        LinkedList<Product> lastProducts = categoryPage.getAllProductsInOrder();
+
+        SoftAssert softAssert = new SoftAssert();
+
+        LOGGER.info("======================================================");
+        LOGGER.info("Chosen sorts: {}", Arrays.stream(chosenSorts).map(SortBy::toString).collect(Collectors.joining(", ")));
+        LOGGER.info("======================================================");
+        for (SortBy sort : chosenSorts) {
+            categoryPage.sortProducts(sort);
+            LinkedList<Product> auxProducts = categoryPage.getAllProductsInOrder();
+
+            softAssert.assertFalse(lastProducts.equals(auxProducts));
+            lastProducts.clear();
+            lastProducts = new LinkedList<>(auxProducts);
+            LOGGER.info("-------------------------------");
+        }
+
+        softAssert.assertAll("At least one sorted list was duplicated.");
     }
 }

@@ -28,11 +28,11 @@ public class ProductCard extends AbstractUIObject {
         this.JS_EXEC = (JavascriptExecutor) driver;
     }
 
-    @FindBy(xpath = ".//h3/a")
-    public WebElement productName;
+    @FindBy(xpath = ".//*[@class=\"h3 product-title\"]/a")
+    private WebElement productName;
 
     @FindBy(xpath = ".//span[@class=\"price\"]")
-    public WebElement priceTag;
+    private WebElement priceTag;
 
     @FindBy(xpath = ".//a[@data-link-action=\"quickview\"]")
     public WebElement previewBtn;
@@ -44,16 +44,24 @@ public class ProductCard extends AbstractUIObject {
         return new ProductPage(getDriver());
     }
 
+    public String getProductName() {
+        return this.productName.getText();
+    }
+
+    public String getProductPriceTag() {
+        return this.priceTag.getText();
+    }
+
     @Override
     public String toString() {
-        return productName.getText() + " - " + priceTag.getText();
+        return getProductName() + " - " + getProductPriceTag();
     }
 
     private ProductPreview openProductPreview() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
         Actions actions = new Actions(driver);
 
-//        LOGGER.debug("Scrolling to {}...", this.productName.getText());
+//        LOGGER.debug("Scrolling to {}...", this.getProductName());
         actions.scrollToElement(this.priceTag).perform();
 //        LOGGER.debug("Hovering over name...");
         actions.moveToElement(this.productName).perform();
@@ -80,7 +88,7 @@ public class ProductCard extends AbstractUIObject {
         if (quantity < 1)
             throw new RuntimeException("Product quantity cannot be less than 1.");
 
-        LOGGER.info("Browsing page for '{}'...", this.productName.getText());
+        LOGGER.info("Browsing page for '{}'...", this.getProductName());
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
         Actions actions = new Actions(driver);
@@ -116,7 +124,7 @@ public class ProductCard extends AbstractUIObject {
             throw new RuntimeException("Modal didn't show. Product was not added to cart.");
         }
 
-        LOGGER.info("{} '{}' added to cart!", quantity, this.productName.getText());
+        LOGGER.info("{} '{}' added to cart!", quantity, this.getProductName());
         wait.until(
                 ExpectedConditions.elementToBeClickable(productAddedModal.closeBtn)
         ).click();

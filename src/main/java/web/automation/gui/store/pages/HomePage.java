@@ -110,7 +110,7 @@ public class HomePage extends AbstractPage {
             } while (selectedProdCards.contains(card));
 
             selectedProdCards.add(card);
-            LOGGER.info("{}. {}", i + 1, card.productName.getText());
+            LOGGER.info("{}. {}", i + 1, card.getProductName());
         }
 
         return selectedProdCards;

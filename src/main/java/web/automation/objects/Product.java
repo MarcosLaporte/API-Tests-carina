@@ -16,4 +16,12 @@ public class Product {
     public String getPriceTag() {
         return this.priceTag;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return this.name.equals(product.name) && this.priceTag.equals(product.priceTag);
+    }
 }
