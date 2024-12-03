@@ -1,8 +1,13 @@
 package WebTests;
 
 import com.zebrunner.carina.core.IAbstractTest;
+import com.zebrunner.carina.webdriver.decorator.ExtendedWebElement;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
@@ -16,8 +21,9 @@ import web.automation.gui.store.pages.ProductPage;
 import web.automation.objects.Cart;
 
 import java.lang.invoke.MethodHandles;
-import java.util.List;
-import java.util.Random;
+import java.time.Duration;
+import java.util.*;
+import java.util.function.Function;
 
 public class StorePageTests implements IAbstractTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -86,5 +92,46 @@ public class StorePageTests implements IAbstractTest {
         Assert.assertTrue(cartPage.isPageOpened(), "Cart page was not opened.");
 
         Assert.assertTrue(cartPage.cartBelongsInPage(cart));
+    }
+
+    @Test
+    public void checkScrolling() {
+        WebDriver driver = getDriver();
+
+        HomePage homePage = new HomePage(driver);
+        homePage.open();
+        Assert.assertTrue(homePage.isPageOpened(), "Home page was not opened.");
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+
+        Function<String, WebElement> getEl = path -> driver.findElement(By.xpath(path));
+
+        LOGGER.info("Waiting for all the elements to load...");
+        SortedMap<String, WebElement> elementMap = new TreeMap<>((Map.of(
+                "1. Featured Sale list", getEl.apply(homePage.getFeaturedListPath.apply(HomePage.FeaturedList.SALE.displayText)),
+                "2. Footer", homePage.footerEl,
+                "3. Custom text block", homePage.customTextBlockEl,
+                "4. Featured Popular list", getEl.apply(homePage.getFeaturedListPath.apply(HomePage.FeaturedList.POPULAR.displayText)),
+                "5. Banner", homePage.bannerEl,
+                "6. Carousel", homePage.carouselEl,
+                "7. Featured New list", getEl.apply(homePage.getFeaturedListPath.apply(HomePage.FeaturedList.NEW.displayText))
+        )));
+
+        wait.until(ExpectedConditions.visibilityOfAllElements(elementMap.values().stream().toList()));
+
+        Actions actions = new Actions(driver);
+        for (Map.Entry<String, WebElement> entry : elementMap.entrySet()) {
+            LOGGER.info(entry.getKey());
+            WebElement element = entry.getValue();
+            try {
+                if (element instanceof ExtendedWebElement)
+                    ((ExtendedWebElement) element).scrollTo();
+                else
+                    actions.scrollToElement(element).perform();
+                Thread.sleep(2500);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }

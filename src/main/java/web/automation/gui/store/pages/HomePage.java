@@ -16,6 +16,7 @@ import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.function.UnaryOperator;
 
 @DeviceType(pageType = DeviceType.Type.DESKTOP, parentClass = AbstractPage.class)
 public class HomePage extends AbstractPage {
@@ -39,7 +40,7 @@ public class HomePage extends AbstractPage {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     @FindBy(xpath = "//*[@id=\"carousel\"]")
-    private ExtendedWebElement carouselEl;
+    public ExtendedWebElement carouselEl;
 
     public HomePage(WebDriver driver) {
         super(driver);
@@ -47,15 +48,26 @@ public class HomePage extends AbstractPage {
         setUiLoadedMarker(carouselEl);
     }
 
+    @FindBy(xpath = "//*[@id=\"content\"]/a[@class=\"banner\"]")
+    public ExtendedWebElement bannerEl;
+
+    @FindBy(id = "custom-text")
+    public ExtendedWebElement customTextBlockEl;
+
+    @FindBy(id = "footer")
+    public ExtendedWebElement footerEl;
+
     @Override
     public void open() {
         getDriver().navigate().to("https://teststore.automationtesting.co.uk/");
     }
 
+    public UnaryOperator<String> getFeaturedListPath = featuredList -> "//section[contains(@class, \"featured-products\")]//h2[normalize-space(text())=\"" + featuredList + "\"]";
+
     public List<ProductCard> getFeaturedProducts(FeaturedList featuredList) {
         LOGGER.info("Getting listed products from {} list...", featuredList);
 
-        String xPath = "//section[contains(@class, \"featured-products\")]//h2[normalize-space(text())=\"" + featuredList + "\"]/..//article";
+        String xPath = getFeaturedListPath.apply(featuredList.displayText) + "/..//article";
         List<WebElement> listSectionEl = getDriver().findElements(By.xpath(xPath));
 
         if (listSectionEl == null || listSectionEl.isEmpty()) {
@@ -72,7 +84,7 @@ public class HomePage extends AbstractPage {
         if (amount < 1) return List.of();
 
         List<WebElement> productCardElements = getDriver().findElements(
-                By.xpath("//section[contains(@class, \"featured-products\")]//h2[normalize-space(text())=\"" + featuredList + "\"]/..//article")
+                By.xpath(getFeaturedListPath.apply(featuredList.displayText) + "/..//article")
         );
 
         List<ProductCard> productCardList = productCardElements
