@@ -181,4 +181,23 @@ public class StorePageTests implements IAbstractTest {
 
         softAssert.assertAll("At least one sorted list was duplicated.");
     }
+
+    @Test
+    public void checkOpenCategories() {
+        WebDriver driver = getDriver();
+
+        HomePage homePage = new HomePage(driver);
+        homePage.open();
+        Assert.assertTrue(homePage.isPageOpened(), "Home page was not opened.");
+
+        HeaderTop headerTop = new HeaderTop(driver, driver.findElement(HEADER_TOP_BY));
+        SoftAssert softAssert = new SoftAssert();
+
+        for (HeaderTop.Categories category : HeaderTop.Categories.values()) {
+            ProductCategoryPage categoryPage = headerTop.openCategoryPage(category);
+            softAssert.assertTrue(categoryPage.isPageOpened(), category + " page was not opened.");
+        }
+
+        softAssert.assertAll();
+    }
 }
