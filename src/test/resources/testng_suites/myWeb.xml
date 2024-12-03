@@ -1,0 +1,14 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="My API Tests">
+
+    <!--<test name="Login Tests">
+        <classes>
+            <class name="WebTests.LoginPageTests" />
+        </classes>
+    </test>-->
+    <test name="Store Tests">
+        <classes>
+            <class name="WebTests.StorePageTests" />
+        </classes>
+    </test>
+</suite>
