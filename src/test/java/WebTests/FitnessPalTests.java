@@ -6,6 +6,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import web.automation.fitnessPal.gui.pages.SignedInHomePage;
 import web.automation.fitnessPal.gui.pages.SignedOffHomePage;
+import web.automation.fitnessPal.gui.pages.account.LogInPage;
 import web.automation.fitnessPal.gui.pages.account.create.*;
 import web.automation.fitnessPal.objects.account.Account;
 import web.automation.fitnessPal.objects.account.enums.GoalOptions;
@@ -102,6 +103,14 @@ public class FitnessPalTests implements IAbstractTest {
         homePage.assertPageOpened();
     }
 
+    @DataProvider(name = "login")
+    public Object[][] getExistingAccount() throws ParseException {
+        Account account = PropertiesReader.getAccount();
+        return new Object[][]{
+                {account.email, account.password}
+        };
+    }
+
     /*
      * Open https://www.myfitnesspal.com/
      * Click "Log In" button
@@ -109,8 +118,19 @@ public class FitnessPalTests implements IAbstractTest {
      * Go to Food page
      * Add breakfast food for today
      */
-//    @Test
-    public void test2() {
+    @Test(dataProvider = "login")
+    public void test2(String email, String password) {
+        WebDriver driver = this.getDriver();
 
+        SignedOffHomePage signedOffHomePage = new SignedOffHomePage(driver);
+        signedOffHomePage.open();
+        signedOffHomePage.assertPageOpened();
+        signedOffHomePage.acceptCookies();
+
+        LogInPage logInPage = signedOffHomePage.openLogin();
+        logInPage.assertPageOpened();
+
+        SignedInHomePage homePage = logInPage.fillFieldsAndContinue(email, password);
+        homePage.assertPageOpened();
     }
 }

@@ -4,10 +4,10 @@ import com.zebrunner.carina.webdriver.decorator.ExtendedWebElement;
 import com.zebrunner.carina.webdriver.decorator.PageOpeningStrategy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.FindBy;
+import web.automation.fitnessPal.Utils;
+import web.automation.fitnessPal.gui.pages.account.LogInPage;
 import web.automation.fitnessPal.gui.pages.account.common.HomePageParent;
 import web.automation.fitnessPal.gui.pages.account.create.WelcomePage;
-
-import static web.automation.fitnessPal.Utils.LOGGER;
 
 public class SignedOffHomePage extends HomePageParent {
     @FindBy(xpath = "//*[@id=\"__next\"]/section[2]/div/div[1]/a")
@@ -19,10 +19,20 @@ public class SignedOffHomePage extends HomePageParent {
         setUiLoadedMarker(startBtn);
     }
 
+    @FindBy(xpath = "//*[@id=\"__next\"]/section[1]/div/a")
+    public ExtendedWebElement accountHeaderBtn;
+
     public WelcomePage clickStart() {
         this.startBtn.click();
-        LOGGER.info("Starting registration process...");
+        Utils.LOGGER.info("Starting registration process...");
 
         return new WelcomePage(getDriver());
+    }
+
+    public LogInPage openLogin() {
+        this.accountHeaderBtn.click();
+        Utils.LOGGER.info("Opening log in page...");
+
+        return new LogInPage(getDriver());
     }
 }
