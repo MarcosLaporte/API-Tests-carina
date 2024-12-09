@@ -2,8 +2,6 @@ package WebTests;
 
 import com.zebrunner.carina.core.IAbstractTest;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import web.automation.fitnessPal.gui.pages.SignedInHomePage;
@@ -14,11 +12,10 @@ import web.automation.fitnessPal.objects.account.enums.GoalOptions;
 import web.automation.fitnessPal.objects.account.enums.Goals.Goal;
 
 import java.text.ParseException;
-import java.time.Duration;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
-
-import static web.automation.fitnessPal.Utils.LOGGER;
 
 public class FitnessPalTests implements IAbstractTest {
     @DataProvider(name = "account")
@@ -37,76 +34,72 @@ public class FitnessPalTests implements IAbstractTest {
     @Test(dataProvider = "account")
     public void test1(Account account) {
         WebDriver driver = this.getDriver();
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
 
         SignedOffHomePage signedOffHomePage = new SignedOffHomePage(driver);
         signedOffHomePage.open();
-        Assert.assertTrue(signedOffHomePage.isPageOpened());
+        signedOffHomePage.assertPageOpened();
+        signedOffHomePage.acceptCookies();
 
         WelcomePage welcomePage = signedOffHomePage.clickStart();
-        Assert.assertTrue(welcomePage.isPageOpened());
+        welcomePage.assertPageOpened();
 
         FirstNameInputPage firstNamePage = welcomePage.openCreateAccount();
-        Assert.assertTrue(firstNamePage.isPageOpened());
+        firstNamePage.assertPageOpened();
 
         GoalSelectionPage goalSelectionPage = firstNamePage.setNameInputAndContinue(account.firstName);
-        Assert.assertTrue(goalSelectionPage.isPageOpened());
+        goalSelectionPage.assertPageOpened();
 
         Set<Goal> goals = account.goalsOptionsMap.keySet();
-        goalSelectionPage.select(goals);
-
-        AffirmationPage bigStepPage = new AffirmationPage(driver);
-        Assert.assertTrue(bigStepPage.isPageOpened());
+        GoalAffirmationPage bigStepPage = goalSelectionPage.selectAndContinue(goals);
+        bigStepPage.assertPageOpened();
         bigStepPage.clickNext();
 
-        for (Map.Entry<Goal, Set<GoalOptions>> goalSetEntry : account.goalsOptionsMap.entrySet()) {
-            Goal goal = goalSetEntry.getKey();
+        // Sorts goals by index because Sets do not provide any order.
+        List<Goal> sortedGoals = new ArrayList<>(goals);
+        sortedGoals.sort(Comparator.comparing(Goal::getIndex));
+        for (Goal goal : sortedGoals) {
             GoalOptionsPage<GoalOptions> goalOptionsPage = new GoalOptionsPage<>(driver, goal);
-            Assert.assertTrue(goalOptionsPage.isPageOpened());
+            goalOptionsPage.assertPageOpened();
 
-            goalOptionsPage.select(goalSetEntry.getValue());
-
-            AffirmationPage affirmationPage = new AffirmationPage(driver);
-            Assert.assertTrue(affirmationPage.isPageOpened());
+            GoalAffirmationPage affirmationPage = goalOptionsPage.selectAndContinue(account.goalsOptionsMap.get(goal));
+            affirmationPage.assertPageOpened();
             affirmationPage.clickNext();
         }
 
         ActivityLevelPage activityLevelPage = new ActivityLevelPage(driver);
-        Assert.assertTrue(activityLevelPage.isPageOpened());
-        activityLevelPage.select(Set.of(account.activityLevel));
+        activityLevelPage.assertPageOpened();
 
-        PersonalInfoPage personalInfoPage = new PersonalInfoPage(driver);
-        Assert.assertTrue(personalInfoPage.isPageOpened());
+        PersonalInfoPage personalInfoPage = activityLevelPage.selectAndContinue(Set.of(account.activityLevel));
+        personalInfoPage.assertPageOpened();
 
         PhysicalInfoPage physicalInfoPage =
                 personalInfoPage.fillFields(account.sex, account.dateOfBirth, account.countryOfOrigin);
-        Assert.assertTrue(physicalInfoPage.isPageOpened());
-        physicalInfoPage.fillFields(account.heightFt, account.heightIn, account.weightLb, account.goalWeight);
+        physicalInfoPage.assertPageOpened();
+        physicalInfoPage.fillFieldsAndContinue(account.heightFt, account.heightIn, account.weightLb, account.goalWeight);
+
+        SignUpPage signUpPage = null;
 
         if (goals.contains(Goal.LOSE_WEIGHT) || goals.contains(Goal.GAIN_WEIGHT)) {
             WeeklyGoalPage weeklyGoalPage = new WeeklyGoalPage(driver);
-            Assert.assertTrue(weeklyGoalPage.isPageOpened());
-            weeklyGoalPage.select(Set.of(account.weeklyGoal));
+            weeklyGoalPage.assertPageOpened();
+            signUpPage = weeklyGoalPage.selectAndContinue(Set.of(account.weeklyGoal));
         }
 
-        SignUpPage signUpPage = new SignUpPage(driver);
-        Assert.assertTrue(signUpPage.isPageOpened());
+        if (signUpPage == null)
+            signUpPage = new SignUpPage(driver);
+        signUpPage.assertPageOpened();
 
-        UsernameInputPage usernameInputPage =
-                signUpPage.fillFields(account.email, account.password);
-        Assert.assertTrue(usernameInputPage.isPageOpened());
+        UsernameInputPage usernameInputPage = signUpPage.fillFieldsAndContinue(account.email, account.password);
+        usernameInputPage.assertPageOpened();
 
-        LastStepPage lastStepPage = usernameInputPage.setNameInput(account.username);
-        Assert.assertTrue(lastStepPage.isPageOpened());
-        // TODO? Add check for error message
+        LastStepPage lastStepPage = usernameInputPage.continueDefaultName();
+        lastStepPage.assertPageOpened();
 
         NutritionalGoal nutritionalGoal = lastStepPage.acceptAllAndFinish();
-        Assert.assertTrue(nutritionalGoal.isPageOpened());
+        nutritionalGoal.assertPageOpened();
 
         SignedInHomePage homePage = nutritionalGoal.unsubscribeAndFinish();
-        Assert.assertTrue(homePage.isPageOpened());
-
-        LOGGER.info("Test ended.");
+        homePage.assertPageOpened();
     }
 
     /*

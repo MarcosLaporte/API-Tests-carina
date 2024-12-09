@@ -1,17 +1,18 @@
 package web.automation.fitnessPal.gui.pages.account.create;
 
-import org.openqa.selenium.By;
+import com.zebrunner.carina.utils.factory.DeviceType;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import web.automation.fitnessPal.gui.pages.account.common.SelectionPageBase;
 import web.automation.fitnessPal.objects.account.enums.WeeklyGoal;
 
 import java.util.ArrayList;
 import java.util.Set;
 
-public class WeeklyGoalPage extends SelectionPageBase<WeeklyGoal> {
+@DeviceType(pageType = DeviceType.Type.DESKTOP, parentClass = SelectionPageBase.class)
+public class WeeklyGoalPage extends SelectionPageBase<WeeklyGoal, SignUpPage> {
     public WeeklyGoalPage(WebDriver driver) {
         super(driver);
+        setPageURL("/weekly-goal");
     }
 
     @Override
@@ -20,14 +21,15 @@ public class WeeklyGoalPage extends SelectionPageBase<WeeklyGoal> {
     }
 
     @Override
-    public void select(Set<WeeklyGoal> weeklyGoalSet) {
+    public SignUpPage selectAndContinue(Set<WeeklyGoal> weeklyGoalSet) {
         if (weeklyGoalSet == null || weeklyGoalSet.size() != 1)
-            throw  new IllegalArgumentException("Must select exactly one option.");
+            throw new IllegalArgumentException("Must select exactly one option.");
 
         WeeklyGoal weeklyGoal = new ArrayList<>(weeklyGoalSet).getFirst();
-        WebElement goalBtn = this.btnsContainer.findElement(By.xpath(".//button[" + weeklyGoal.getIndex() + "]"));
-        goalBtn.click();
+        this.buttonEl.format(weeklyGoal.getIndex()).click();
 
         this.clickNext();
+
+        return new SignUpPage(getDriver());
     }
 }

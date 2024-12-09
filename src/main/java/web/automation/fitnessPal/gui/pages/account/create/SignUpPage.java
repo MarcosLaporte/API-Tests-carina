@@ -1,53 +1,74 @@
 package web.automation.fitnessPal.gui.pages.account.create;
 
+import com.zebrunner.carina.utils.factory.DeviceType;
 import com.zebrunner.carina.webdriver.decorator.ExtendedWebElement;
 import com.zebrunner.carina.webdriver.decorator.PageOpeningStrategy;
+import com.zebrunner.carina.webdriver.locator.Context;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import web.automation.fitnessPal.AccountFieldValidator;
+import web.automation.fitnessPal.Utils;
 import web.automation.fitnessPal.gui.pages.account.common.CreatePageBase;
 
 import java.time.Duration;
 
+@DeviceType(pageType = DeviceType.Type.DESKTOP, parentClass = CreatePageBase.class)
 public class SignUpPage extends CreatePageBase {
-    @FindBy(xpath = "//h1[text()=\"Almost there! Create your account.\"]")
+    @Context(dependsOn = "formElement")
+    @FindBy(xpath = "//h1")
     private ExtendedWebElement headerMessage;
 
     public SignUpPage(WebDriver driver) {
         super(driver);
         setPageOpeningStrategy(PageOpeningStrategy.BY_ELEMENT);
         setUiLoadedMarker(headerMessage);
-
-        this.emailInput = this.formElement.findElement(By.xpath(".//input[@id=\"Email address\"]"));
-        this.passInput = this.formElement.findElement(By.xpath(".//input[@id=\"Create a password\"]"));
-        this.termsConditionsBtn = this.formElement.findElement(By.xpath(".//input[@type=\"checkbox\"]"));
-        this.continueBtn = this.formElement.findElement(By.xpath(".//button[@type=\"submit\"]"));
     }
 
-    public final WebElement emailInput;
-    public final WebElement passInput;
-    public final WebElement termsConditionsBtn;
-    public final WebElement continueBtn;
+    @Context(dependsOn = "formElement")
+    @FindBy(xpath = ".//input[@id=\"Email address\"]")
+    public ExtendedWebElement emailInput;
+
+    @Context(dependsOn = "formElement")
+    @FindBy(xpath = ".//input[@id=\"Create a password\"]")
+    public ExtendedWebElement passInput;
+
+    @Context(dependsOn = "formElement")
+    @FindBy(xpath = ".//p[text()=\"Terms & Conditions\"]/..")
+    public ExtendedWebElement termsConditionsBtn;
+
+    @Context(dependsOn = "formElement")
+    @FindBy(xpath = ".//button[@type=\"submit\"]")
+    public ExtendedWebElement continueBtn;
 
     @Override
     public boolean isPageOpened() {
         return super.isPageOpened() && headerMessage.isPresent();
     }
 
-    public UsernameInputPage fillFields(String emailAddress, String password) {
+    public UsernameInputPage fillFieldsAndContinue(String emailAddress, String password) {
         AccountFieldValidator.validateEmail(emailAddress);
-        this.emailInput.sendKeys(emailAddress);
+        this.emailInput.type(emailAddress);
 
         AccountFieldValidator.validatePassword(password);
-        this.passInput.sendKeys(password);
+        this.passInput.type(password);
 
         this.termsConditionsBtn.click();
 
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofMillis(2500));
+        try {
+            wait.until(ExpectedConditions.presenceOfElementLocated(
+                    By.xpath("//form//p[contains(text(), \"Your email is already registered\")]")
+            ));
+
+            throw new IllegalArgumentException(emailAddress + " is already registered.");
+        } catch (TimeoutException e) {
+            Utils.LOGGER.debug("Email address is not in use.");
+        }
+
         wait.until(ExpectedConditions.elementToBeClickable(this.continueBtn)).click();
 
         return new UsernameInputPage(getDriver());

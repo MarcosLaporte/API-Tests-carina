@@ -1,18 +1,24 @@
 package web.automation.fitnessPal.gui.pages.account.create;
 
-import org.openqa.selenium.By;
+import com.zebrunner.carina.utils.factory.DeviceType;
+import com.zebrunner.carina.webdriver.decorator.ExtendedWebElement;
+import com.zebrunner.carina.webdriver.decorator.PageOpeningStrategy;
+import com.zebrunner.carina.webdriver.locator.Context;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
 import web.automation.fitnessPal.gui.pages.account.common.CreatePageBase;
 
+@DeviceType(pageType = DeviceType.Type.DESKTOP, parentClass = CreatePageBase.class)
 public class LastStepPage extends CreatePageBase {
     public LastStepPage(WebDriver driver) {
         super(driver);
-
-        this.acceptAllBtn = this.formElement.findElement(By.xpath(".//h2[text()=\"Accept All\"]/../..//input[@type=\"checkbox\"]"));
+        setPageOpeningStrategy(PageOpeningStrategy.BY_URL);
+        setPageURL("/consents");
     }
 
-    public final WebElement acceptAllBtn;
+    @Context(dependsOn = "formElement")
+    @FindBy(xpath = ".//input[@aria-label=\"Accept All\"]")
+    public ExtendedWebElement acceptAllBtn;
 
     @Override
     public boolean isPageOpened() {
@@ -22,6 +28,7 @@ public class LastStepPage extends CreatePageBase {
     public NutritionalGoal acceptAllAndFinish() {
         this.acceptAllBtn.click();
         this.clickNext();
+
         return new NutritionalGoal(getDriver());
     }
 }

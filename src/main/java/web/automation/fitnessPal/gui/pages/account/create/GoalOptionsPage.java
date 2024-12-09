@@ -1,22 +1,27 @@
 package web.automation.fitnessPal.gui.pages.account.create;
 
+import com.zebrunner.carina.utils.factory.DeviceType;
+import com.zebrunner.carina.webdriver.decorator.ExtendedWebElement;
 import com.zebrunner.carina.webdriver.decorator.PageOpeningStrategy;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import web.automation.fitnessPal.AccountFieldValidator;
+import web.automation.fitnessPal.Utils;
 import web.automation.fitnessPal.gui.pages.account.common.SelectionPageBase;
+import web.automation.fitnessPal.gui.pages.account.create.GoalAffirmationPage.AffirmationRelUrl;
 import web.automation.fitnessPal.objects.account.enums.GoalOptions;
 import web.automation.fitnessPal.objects.account.enums.Goals.Goal;
 
 import java.util.Set;
 
-public class GoalOptionsPage<T extends GoalOptions> extends SelectionPageBase<T> {
+@DeviceType(pageType = DeviceType.Type.DESKTOP, parentClass = SelectionPageBase.class)
+public class GoalOptionsPage<T extends GoalOptions> extends SelectionPageBase<T, GoalAffirmationPage> {
     public final Goal goal;
 
     public GoalOptionsPage(WebDriver driver, Goal goal) {
         super(driver);
         setPageOpeningStrategy(PageOpeningStrategy.BY_URL);
+        setPageURL("/goals/" + goal.relUrl + "/options");
 
         this.goal = goal;
     }
@@ -27,15 +32,19 @@ public class GoalOptionsPage<T extends GoalOptions> extends SelectionPageBase<T>
     }
 
     @Override
-    public void select(Set<T> options) throws IllegalArgumentException {
+    public GoalAffirmationPage selectAndContinue(Set<T> options) throws IllegalArgumentException {
         AccountFieldValidator.validateGoalOptions(this.goal, options);
 
         for (T option : options) {
-            WebElement optionBtn = this.btnsContainer.findElement(By.xpath(".//button[" + option.getIndex() + "]"));
-            optionBtn.click();
+            ExtendedWebElement currOptionBtn = this.buttonEl.format(option.getIndex());
+            Utils.scrollTo(getDriver(), currOptionBtn);
+            currOptionBtn.click();
         }
 
-        if (options.size() < this.btnsContainer.findElements(By.xpath(".//button")).size())
+        if (goal != Goal.INCREASE_STEP_COUNT &&
+                options.size() < this.btnsContainer.findElements(By.xpath(".//button")).size())
             this.clickNext();
+
+        return new GoalAffirmationPage(getDriver(), goal, AffirmationRelUrl.AFFIRMATION);
     }
 }

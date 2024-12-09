@@ -16,5 +16,4 @@ public class SignedInHomePage extends HomePageParent {
         setUiLoadedMarker(header);
     }
 
-
 }

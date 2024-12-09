@@ -15,8 +15,6 @@ public class Account {
     public enum Sex {MALE, FEMALE}
 
     public final String firstName;
-//    private List<Goal> goals;
-//    private List<List<? extends Options>> goalOptions;
     public final Map<Goal, Set<GoalOptions>> goalsOptionsMap;
     public final ActivityLevel activityLevel;
     public final Sex sex;
@@ -31,7 +29,6 @@ public class Account {
     public final String password;
     public final String username;
 
-//    public Account(String firstName, Goal[] goals, List<GoalOptions>[] goalOptions, Sex sex, Date dateOfBirth, String countryOfOrigin, float heightFt, float heightIn, float weightKg, float goalWeight, String email, String password, String username) {
     public Account(String firstName, Map<Goal, Set<GoalOptions>> goalsOptionsMap, ActivityLevel activityLevel, Sex sex, Date dateOfBirth, String countryOfOrigin, float heightFt, float heightIn, float weightLb, float goalWeight, WeeklyGoal weeklyGoal, String email, String password, String username) {
         AccountFieldValidator.validateFirstName(firstName);
         AccountFieldValidator.validateGoalsAndOptions(goalsOptionsMap);

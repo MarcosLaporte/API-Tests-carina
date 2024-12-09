@@ -1,17 +1,22 @@
 package web.automation.fitnessPal.gui.pages.account.create;
 
-import org.openqa.selenium.By;
+import com.zebrunner.carina.utils.factory.DeviceType;
+import com.zebrunner.carina.webdriver.decorator.ExtendedWebElement;
+import com.zebrunner.carina.webdriver.decorator.PageOpeningStrategy;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import web.automation.fitnessPal.Utils;
 import web.automation.fitnessPal.gui.pages.account.common.SelectionPageBase;
 import web.automation.fitnessPal.objects.account.enums.ActivityLevel;
 
 import java.util.ArrayList;
 import java.util.Set;
 
-public class ActivityLevelPage extends SelectionPageBase<ActivityLevel> {
+@DeviceType(pageType = DeviceType.Type.DESKTOP, parentClass = SelectionPageBase.class)
+public class ActivityLevelPage extends SelectionPageBase<ActivityLevel, PersonalInfoPage> {
     public ActivityLevelPage(WebDriver driver) {
         super(driver);
+        setPageOpeningStrategy(PageOpeningStrategy.BY_URL);
+        setPageURL("/activity-level");
     }
 
     @Override
@@ -20,14 +25,17 @@ public class ActivityLevelPage extends SelectionPageBase<ActivityLevel> {
     }
 
     @Override
-    public void select(Set<ActivityLevel> activityLevelSet) {
+    public PersonalInfoPage selectAndContinue(Set<ActivityLevel> activityLevelSet) {
         if (activityLevelSet == null || activityLevelSet.size() != 1)
             throw  new IllegalArgumentException("Must select exactly one option.");
 
         ActivityLevel level = new ArrayList<>(activityLevelSet).getFirst();
-        WebElement goalBtn = this.btnsContainer.findElement(By.xpath(".//button[" + level.getIndex() + "]"));
-        goalBtn.click();
+        ExtendedWebElement levelBtn = this.buttonEl.format(level.getIndex());
+        Utils.scrollTo(getDriver(), levelBtn);
+        levelBtn.click();
 
         this.clickNext();
+
+        return new PersonalInfoPage(getDriver());
     }
 }

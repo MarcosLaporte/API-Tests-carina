@@ -2,27 +2,29 @@ package web.automation.fitnessPal.objects.account.enums;
 
 public class Goals {
     public enum Goal implements Options {
-        LOSE_WEIGHT(LoseWeight.class),
-        MAINTAIN_WEIGHT(MaintainWeight.class),
-        GAIN_WEIGHT(GainWeight.class),
-        GAIN_MUSCLE(GainMuscle.class, false),
-        MODIFY_MY_DIET(ModifyDiet.class),
-        MANAGE_STRESS(ManageStress.class),
-        INCREASE_STEP_COUNT(IncreaseSteps.class, false);
+        LOSE_WEIGHT(LoseWeight.class, "lose-weight"),
+        MAINTAIN_WEIGHT(MaintainWeight.class, "maintain-weight"),
+        GAIN_WEIGHT(GainWeight.class, "gain-weight"),
+        GAIN_MUSCLE(GainMuscle.class, "gain-muscle", false),
+        MODIFY_MY_DIET(ModifyDiet.class, "modify-diet"),
+        MANAGE_STRESS(ManageStress.class, "manage-stress"),
+        INCREASE_STEP_COUNT(IncreaseSteps.class, "increase-steps", false);
 
         public final Class<? extends Enum<?>> optionsClass;
+        public final String relUrl;
         public final boolean hasMultipleOptions;
 
-        Goal(Class<? extends Enum<?>> goalOptionsClass, boolean hasMultipleOptions) {
+        Goal(Class<? extends Enum<?>> goalOptionsClass, String relUrl, boolean hasMultipleOptions) {
             if (goalOptionsClass.isAssignableFrom(GoalOptions.class))
                 throw new RuntimeException(String.format("class %s does not implement class GoalOptions.", goalOptionsClass.getSimpleName()));
 
             this.optionsClass = goalOptionsClass;
+            this.relUrl = relUrl;
             this.hasMultipleOptions = hasMultipleOptions;
         }
 
-        Goal(Class<? extends Enum<?>> goalOptionsClass) {
-            this(goalOptionsClass, true);
+        Goal(Class<? extends Enum<?>> goalOptionsClass, String relUrl) {
+            this(goalOptionsClass, relUrl, true);
         }
 
         public boolean isWeightGoal() {
@@ -78,11 +80,6 @@ public class Goals {
         TONE_UP,
         BULK_UP,
         GET_STRONG
-
-        /*@Override
-        public boolean allowMultiple() {
-            return false
-        }*/
     }
 
     public enum ModifyDiet implements GoalOptions {
@@ -127,10 +124,5 @@ public class Goals {
         MMM_TO_VMM,
         MORE_THAN_VMM,
         DONT_KNOW
-
-        /*@Override
-        public boolean allowMultiple() {
-            return false;
-        }*/
     }
 }
