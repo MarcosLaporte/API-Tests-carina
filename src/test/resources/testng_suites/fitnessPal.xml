@@ -1,0 +1,9 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="My Web Tests">
+
+    <test name="FitnessPal tests">
+        <classes>
+            <class name="WebTests.FitnessPalTests" />
+        </classes>
+    </test>
+</suite>
