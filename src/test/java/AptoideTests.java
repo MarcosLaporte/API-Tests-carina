@@ -7,6 +7,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 
+import java.time.Duration;
 import java.util.List;
 
 public class AptoideTests implements IAbstractTest {
@@ -73,5 +74,72 @@ public class AptoideTests implements IAbstractTest {
 
         AppPage appPage = searchPage.openResult(selectedAppEl);
         Assert.assertEquals(appPage.appNameEl.getText(), appName, "App names don't match.");
+    }
+
+    @Test
+    public void checkHomePage() {
+        WebDriver driver = getDriver();
+        SoftAssert softAssert = new SoftAssert();
+
+        WelcomePage welcomePage = new WelcomePage(driver);
+        welcomePage.assertPageOpened(5);
+
+        HomePage homePage = welcomePage.skipWelcomePage();
+        homePage.assertPageOpened(5);
+
+        softAssert.assertTrue(homePage.gamesChipBtn.isVisible(Duration.ofMillis(2500)), "Games Chip Button is not visible.");
+        softAssert.assertTrue(homePage.appsChipBtn.isVisible(Duration.ofMillis(2500)), "Apps Chip Button is not visible.");
+        softAssert.assertTrue(homePage.featuredAppList.isVisible(Duration.ofMillis(2500)), "Featured App List is not visible.");
+        softAssert.assertTrue(homePage.gotwCardEl.isVisible(Duration.ofMillis(2500)), "Game of the Week Card is not visible.");
+        softAssert.assertTrue(homePage.featuredAppCoinList.isVisible(Duration.ofMillis(2500)), "Featured App Coin List is not visible.");
+
+        softAssert.assertAll();
+    }
+
+    @Test
+    public void checkStorePage() {
+        WebDriver driver = getDriver();
+        SoftAssert softAssert = new SoftAssert();
+
+        WelcomePage welcomePage = new WelcomePage(driver);
+        welcomePage.assertPageOpened(5);
+
+        HomePage homePage = welcomePage.skipWelcomePage();
+        homePage.assertPageOpened(5);
+
+        StoresPage storesPage = homePage.navigateTo(BasePage.Section.STORES);
+        storesPage.assertPageOpened(5);
+
+        for (ExtendedWebElement header : storesPage.headerList) {
+            softAssert.assertTrue(header.isVisible(Duration.ofMillis(2500)), "Header not visible.");
+        }
+
+        for (ExtendedWebElement recommendedStore : storesPage.recommendedStores) {
+            softAssert.assertTrue(recommendedStore.isVisible(Duration.ofMillis(2500)), "Store not visible.");
+        }
+
+        softAssert.assertAll();
+    }
+
+    @Test
+    public void checkAppsPage() {
+        WebDriver driver = getDriver();
+        SoftAssert softAssert = new SoftAssert();
+
+        WelcomePage welcomePage = new WelcomePage(driver);
+        welcomePage.assertPageOpened(5);
+
+        HomePage homePage = welcomePage.skipWelcomePage();
+        homePage.assertPageOpened(5);
+
+        AppsPage appsPage = homePage.navigateTo(BasePage.Section.APPS);
+        appsPage.assertPageOpened(5);
+
+        for (ExtendedWebElement header : appsPage.headerList) {
+            softAssert.assertTrue(header.isVisible(Duration.ofMillis(2500)), "Header not visible.");
+        }
+
+        softAssert.assertTrue(appsPage.aptoideAppEl.isPresent(), "Aptoide app is not present.");
+
     }
 }

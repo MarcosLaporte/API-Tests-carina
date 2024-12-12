@@ -15,4 +15,19 @@ public class HomePage extends BasePage implements IAndroidUtils {
 
     @FindBy(id = "main_home_container_content")
     ExtendedWebElement mainContent;
+
+    @FindBy(id = "games_chip")
+    public ExtendedWebElement gamesChipBtn;
+
+    @FindBy(id = "apps_chip")
+    public ExtendedWebElement appsChipBtn;
+
+    @FindBy(id = "featured_graphic_list")
+    public ExtendedWebElement featuredAppList;
+
+    @FindBy(id = "root_cardview")
+    public ExtendedWebElement gotwCardEl;
+
+    @FindBy(id = "featured_appc_card")
+    public ExtendedWebElement featuredAppCoinList;
 }
