@@ -1,8 +1,8 @@
 package android.automation.aptoide.gui.pages;
 
 import android.automation.aptoide.Utils;
+import com.zebrunner.carina.utils.android.IAndroidUtils;
 import com.zebrunner.carina.utils.factory.DeviceType;
-import com.zebrunner.carina.utils.mobile.IMobileUtils;
 import com.zebrunner.carina.webdriver.decorator.ExtendedWebElement;
 import com.zebrunner.carina.webdriver.gui.AbstractPage;
 import com.zebrunner.carina.webdriver.locator.Context;
@@ -14,7 +14,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.time.Duration;
 
 @DeviceType(pageType = DeviceType.Type.ANDROID_PHONE, parentClass = BasePage.class)
-public abstract class BasePage extends AbstractPage implements IMobileUtils {
+public abstract class BasePage extends AbstractPage implements IAndroidUtils {
     public enum Section {
         HOME("action_home", HomePage.class),
         EDITORIAL("action_curation", EditorialPage.class),

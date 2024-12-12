@@ -1,13 +1,13 @@
 package android.automation.aptoide.gui.pages;
 
 import android.automation.aptoide.Utils;
-import com.zebrunner.carina.utils.mobile.IMobileUtils;
+import com.zebrunner.carina.utils.android.IAndroidUtils;
 import com.zebrunner.carina.webdriver.decorator.ExtendedWebElement;
 import com.zebrunner.carina.webdriver.gui.AbstractPage;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.FindBy;
 
-public class WelcomePage extends AbstractPage implements IMobileUtils {
+public class WelcomePage extends AbstractPage implements IAndroidUtils {
     public WelcomePage(WebDriver driver) {
         super(driver);
         setUiLoadedMarker(title);
