@@ -1,0 +1,10 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Android Tests - Aptoide App">
+
+	<test name="Mobile Android test">
+		<classes>
+			<class name="AptoideTests" />
+		</classes>
+	</test>
+
+</suite>
