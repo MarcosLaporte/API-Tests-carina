@@ -1,4 +1,4 @@
-package web.automation.objects;
+package web.automation.gui.store.objects;
 
 public class Product {
     private final String name;

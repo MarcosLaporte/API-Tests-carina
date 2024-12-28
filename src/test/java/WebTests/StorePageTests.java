@@ -22,8 +22,8 @@ import web.automation.gui.store.pages.HomePage;
 import web.automation.gui.store.pages.ProductCategoryPage;
 import web.automation.gui.store.pages.ProductCategoryPage.SortBy;
 import web.automation.gui.store.pages.ProductPage;
-import web.automation.objects.Cart;
-import web.automation.objects.Product;
+import web.automation.gui.store.objects.Cart;
+import web.automation.gui.store.objects.Product;
 
 import java.lang.invoke.MethodHandles;
 import java.time.Duration;

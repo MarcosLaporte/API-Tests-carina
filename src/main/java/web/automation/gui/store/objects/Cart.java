@@ -1,4 +1,4 @@
-package web.automation.objects;
+package web.automation.gui.store.objects;
 
 import java.util.HashMap;
 import java.util.Map;

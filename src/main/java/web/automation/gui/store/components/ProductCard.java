@@ -11,8 +11,8 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import web.automation.gui.store.objects.Product;
 import web.automation.gui.store.pages.ProductPage;
-import web.automation.objects.Product;
 
 import java.lang.invoke.MethodHandles;
 import java.time.Duration;

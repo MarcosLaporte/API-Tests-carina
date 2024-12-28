@@ -11,8 +11,8 @@ import org.openqa.selenium.support.FindBy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import web.automation.gui.store.components.ProductInCart;
-import web.automation.objects.Cart;
-import web.automation.objects.Product;
+import web.automation.gui.store.objects.Cart;
+import web.automation.gui.store.objects.Product;
 
 import java.lang.invoke.MethodHandles;
 import java.util.List;
