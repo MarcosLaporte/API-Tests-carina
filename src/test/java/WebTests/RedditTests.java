@@ -18,7 +18,7 @@ public class RedditTests implements IAbstractTest {
     }
 
     @DataProvider
-    Object[][] randomPostNumbers() {
+    Object[][] postNumbers() {
         return new Object[][]{
                 {0},
                 {1},
@@ -28,7 +28,7 @@ public class RedditTests implements IAbstractTest {
 
     @Test(
             description = "Selects a community from posts and checks the URL and header of the page match the name of the community selected.",
-            dataProvider = "randomPostNumbers"
+            dataProvider = "postNumbers"
     )
     public void selectRandomCommunityCheckName(int postIndex) {
         WebDriver driver = getDriver();
