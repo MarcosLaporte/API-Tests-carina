@@ -1,11 +1,11 @@
 package WebTests;
 
-import web.automation.fitnessPal.objects.account.Account;
-import web.automation.fitnessPal.objects.account.enums.ActivityLevel;
-import web.automation.fitnessPal.objects.account.enums.GoalOptions;
-import web.automation.fitnessPal.objects.account.enums.Goals;
-import web.automation.fitnessPal.objects.account.enums.Goals.Goal;
-import web.automation.fitnessPal.objects.account.enums.WeeklyGoal;
+import web.automation.gui.fitnessPal.objects.account.Account;
+import web.automation.gui.fitnessPal.objects.account.enums.ActivityLevel;
+import web.automation.gui.fitnessPal.objects.account.enums.GoalOptions;
+import web.automation.gui.fitnessPal.objects.account.enums.Goals;
+import web.automation.gui.fitnessPal.objects.account.enums.Goals.Goal;
+import web.automation.gui.fitnessPal.objects.account.enums.WeeklyGoal;
 
 import java.io.FileInputStream;
 import java.io.IOException;

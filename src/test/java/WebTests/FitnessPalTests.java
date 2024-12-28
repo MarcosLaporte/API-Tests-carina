@@ -1,16 +1,17 @@
 package WebTests;
 
 import com.zebrunner.carina.core.IAbstractTest;
+import com.zebrunner.carina.utils.R;
 import org.openqa.selenium.WebDriver;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import web.automation.fitnessPal.gui.pages.SignedInHomePage;
-import web.automation.fitnessPal.gui.pages.SignedOffHomePage;
-import web.automation.fitnessPal.gui.pages.account.LogInPage;
-import web.automation.fitnessPal.gui.pages.account.create.*;
-import web.automation.fitnessPal.objects.account.Account;
-import web.automation.fitnessPal.objects.account.enums.GoalOptions;
-import web.automation.fitnessPal.objects.account.enums.Goals.Goal;
+import web.automation.gui.fitnessPal.objects.account.Account;
+import web.automation.gui.fitnessPal.objects.account.enums.GoalOptions;
+import web.automation.gui.fitnessPal.objects.account.enums.Goals.Goal;
+import web.automation.gui.fitnessPal.pages.SignedInHomePage;
+import web.automation.gui.fitnessPal.pages.SignedOffHomePage;
+import web.automation.gui.fitnessPal.pages.account.LogInPage;
+import web.automation.gui.fitnessPal.pages.account.create.*;
 
 import java.text.ParseException;
 import java.util.ArrayList;
