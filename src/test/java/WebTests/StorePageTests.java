@@ -1,6 +1,7 @@
 package WebTests;
 
 import com.zebrunner.carina.core.IAbstractTest;
+import com.zebrunner.carina.utils.R;
 import com.zebrunner.carina.webdriver.decorator.ExtendedWebElement;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -32,6 +33,11 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class StorePageTests implements IAbstractTest {
+    static {
+        R.CONFIG.put("url", "https://teststore.automationtesting.co.uk/", true);
+        R.CONFIG.put("platform", "DESKTOP", true);
+    }
+
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private static final By HEADER_NAV_BY = By.xpath("//*[@id=\"header\"]/nav");
     private static final By HEADER_TOP_BY = By.xpath("//*[@id=\"header\"]/div[@class=\"header-top\"]");

@@ -1,6 +1,7 @@
 package WebTests;
 
 import com.zebrunner.carina.core.IAbstractTest;
+import com.zebrunner.carina.utils.R;
 import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -9,6 +10,11 @@ import web.automation.gui.login.pages.SignInPage;
 import web.automation.gui.login.pages.SuccessfulLoginPage;
 
 public class LoginPageTests implements IAbstractTest {
+    static {
+        R.CONFIG.put("url", "https://practicetestautomation.com/practice-test-login/", true);
+        R.CONFIG.put("platform", "DESKTOP", true);
+    }
+
     @Test
     public void testSuccessfulLogin() {
         WebDriver driver = getDriver();
