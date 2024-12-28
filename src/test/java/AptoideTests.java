@@ -1,5 +1,6 @@
 import android.automation.aptoide.gui.pages.*;
 import com.zebrunner.carina.core.IAbstractTest;
+import com.zebrunner.carina.utils.R;
 import com.zebrunner.carina.webdriver.decorator.ExtendedWebElement;
 import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
@@ -11,6 +12,12 @@ import java.time.Duration;
 import java.util.List;
 
 public class AptoideTests implements IAbstractTest {
+    static {
+        R.CONFIG.put("url", "", true);
+        R.CONFIG.put("capabilities.platform", "ANDROID", true);
+        R.CONFIG.put("capabilities.app", "IdeaProjects/API-Tests-carina/src/test/resources/files/aptoide.apk", true);
+    }
+
     @Test
     public void checkBottomNavBar() {
         WebDriver driver = getDriver();
