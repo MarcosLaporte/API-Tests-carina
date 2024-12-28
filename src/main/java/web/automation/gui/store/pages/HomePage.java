@@ -57,11 +57,6 @@ public class HomePage extends AbstractPage {
     @FindBy(id = "footer")
     public ExtendedWebElement footerEl;
 
-    @Override
-    public void open() {
-        getDriver().navigate().to("https://teststore.automationtesting.co.uk/");
-    }
-
     public UnaryOperator<String> getFeaturedListPath = featuredList -> "//section[contains(@class, \"featured-products\")]//h2[normalize-space(text())=\"" + featuredList + "\"]";
 
     public List<ProductCard> getFeaturedProducts(FeaturedList featuredList) {

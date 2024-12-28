@@ -79,6 +79,16 @@ public class LoginPageTests implements IAbstractTest {
     public void testSuccessfulLogout() {
         WebDriver driver = getDriver();
 
+        SignInPage signInPage = new SignInPage(driver);
+        signInPage.open();
+        Assert.assertTrue(signInPage.isPageOpened(), "Sign in page was not opened.");
+
+        signInPage.userInput.type("student", 3);
+        signInPage.passInput.type("Password123", 3);
+        signInPage.submitBtn.click(5);
+
+        Assert.assertTrue(signInPage.getCurrentUrl().contains("logged-in-successfully/"), "Login unsuccessful, page not redirected.");
+
         SuccessfulLoginPage successPage = new SuccessfulLoginPage(driver);
         successPage.open();
         Assert.assertTrue(successPage.isPageOpened(), "Successful login page was not opened.");
@@ -89,7 +99,6 @@ public class LoginPageTests implements IAbstractTest {
 
         Assert.assertTrue(successPage.getCurrentUrl().contains("practice-test-login/"), "Logout unsuccessful, page not redirected.");
 
-        SignInPage signInPage = new SignInPage(driver);
-        Assert.assertTrue(signInPage.isPageOpened(), "Sign in page was not opened.");
+        Assert.assertTrue(new SignInPage(driver).isPageOpened(), "Sign in page was not opened.");
     }
 }

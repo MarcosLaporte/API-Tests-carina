@@ -13,13 +13,13 @@ public class SuccessfulLoginPage extends AbstractPage {
 
     public SuccessfulLoginPage(WebDriver driver) {
         super(driver);
-        setPageOpeningStrategy(PageOpeningStrategy.BY_ELEMENT);
+        setPageOpeningStrategy(PageOpeningStrategy.BY_URL_AND_ELEMENT);
         setUiLoadedMarker(successTitle);
     }
 
     @Override
-    public void open() {
-        getDriver().navigate().to("https://practicetestautomation.com/logged-in-successfully/");
+    public boolean isPageOpened() {
+        return getCurrentUrl().contains("/logged-in-successfully");
     }
 
     @FindBy(xpath = "//*[@id=\"loop-container\"]/div/article/div[2]/div/div/div/a")

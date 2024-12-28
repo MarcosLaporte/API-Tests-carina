@@ -30,11 +30,6 @@ public class CartPage extends AbstractPage {
         setPageOpeningStrategy(PageOpeningStrategy.BY_URL);
     }
 
-    @Override
-    public void open() {
-        getDriver().navigate().to(getDriver().getCurrentUrl() + "?controller=cart&action=show");
-    }
-
     @FindBy(xpath = "//div[@id=\"cart-subtotal-products\"]/span[@class=\"value\"]")
     public ExtendedWebElement itemsTotalValue;
 

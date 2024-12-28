@@ -12,13 +12,13 @@ public class SignInPage extends AbstractPage {
 
     public SignInPage(WebDriver driver) {
         super(driver);
-        setPageOpeningStrategy(PageOpeningStrategy.BY_ELEMENT);
+        setPageOpeningStrategy(PageOpeningStrategy.BY_URL_AND_ELEMENT);
         setUiLoadedMarker(testTitle);
     }
 
     @Override
-    public void open() {
-        getDriver().navigate().to("https://practicetestautomation.com/practice-test-login/");
+    public boolean isPageOpened() {
+        return getCurrentUrl().contains("/practice-test-login");
     }
 
     @FindBy(xpath = "//*[@id=\"username\"]")
