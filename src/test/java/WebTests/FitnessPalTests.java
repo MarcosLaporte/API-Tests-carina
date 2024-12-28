@@ -20,6 +20,11 @@ import java.util.List;
 import java.util.Set;
 
 public class FitnessPalTests implements IAbstractTest {
+    static {
+        R.CONFIG.put("url", "https://www.myfitnesspal.com", true);
+        R.CONFIG.put("platform", "DESKTOP", true);
+    }
+
     @DataProvider(name = "account")
     public Object[][] getAccount() throws ParseException {
         return new Object[][]{
