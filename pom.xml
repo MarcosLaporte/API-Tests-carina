@@ -20,7 +20,7 @@
 		<carina-azure.version>1.2.5</carina-azure.version>
 		<carina-appcenter.version>1.2.7</carina-appcenter.version>
 
-		<java.version>11</java.version>
+		<java.version>22</java.version>
 		<zebrunner-agent.version>1.9.8</zebrunner-agent.version>
 		<suite>helloWorld</suite>
 	</properties>
